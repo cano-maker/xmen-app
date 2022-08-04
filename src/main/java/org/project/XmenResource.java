@@ -1,6 +1,7 @@
 package org.project;
 
 import io.smallrye.mutiny.Uni;
+import org.project.interfaces.IXmenService;
 import org.project.models.ADNSequence;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,13 +14,16 @@ import javax.ws.rs.core.MediaType;
 @ApplicationScoped
 public class XmenResource {
 
+    private final IXmenService xmenService;
+
+    public XmenResource(IXmenService xmenService) {
+        this.xmenService = xmenService;
+    }
+
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<String> mutant(ADNSequence sequence) {
-        return Uni.createFrom().item(getMessage(sequence));
+        return xmenService.processADN(sequence);
     }
 
-    private static String getMessage(ADNSequence sequence) {
-        return "The Sequence is: " + sequence.getDna().toString();
-    }
 }
