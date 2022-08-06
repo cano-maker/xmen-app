@@ -1,11 +1,11 @@
 package org.project.exceptions;
 
 
-public class DNASizeLowThanFourException extends RuntimeException
+public class DNASequenceNotValid extends RuntimeException
 {
     private String message;
 
-    public DNASizeLowThanFourException(String message) {
+    public DNASequenceNotValid(String message) {
         super(message);
         this.message = message;
     }
