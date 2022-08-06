@@ -5,5 +5,5 @@ import org.project.models.ADNSequence;
 
 public interface IXmenService {
 
-    Uni<String> processADN(ADNSequence adnSequence);
+    Uni<ADNSequence> processADN(ADNSequence adnSequence);
 }

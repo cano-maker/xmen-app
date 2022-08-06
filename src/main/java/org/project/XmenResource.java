@@ -33,7 +33,7 @@ public class XmenResource {
                 .onFailure().recoverWithItem(throwable -> generateError(throwable.getMessage()));
     }
 
-    private static Response generateOk(String result)
+    private static Response generateOk(ADNSequence result)
     {
         return Response.status(Response.Status.OK)
                 .entity(result)

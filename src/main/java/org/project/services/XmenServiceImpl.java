@@ -10,7 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class XmenServiceImpl implements IXmenService {
 
     @Override
-    public Uni<String> processADN(ADNSequence adnSequence) {
-        return Uni.createFrom().item(adnSequence.getDna().toString());
+    public Uni<ADNSequence> processADN(ADNSequence adnSequence) {
+        return Uni.createFrom().item(adnSequence);
     }
 }
