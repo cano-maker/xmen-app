@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @ApplicationScoped
 public class XmenServiceImpl implements IXmenService {
@@ -87,6 +88,28 @@ public class XmenServiceImpl implements IXmenService {
     }
 
     private boolean validateVerticalSequences(ADNSequence adnSequence)
+    {
+        return Optional.of(validatePatternMutant(getVerticalList(adnSequence)))
+                .map(Long::intValue)
+                .map(adnSequence::incrementCountMutantSequences)
+                .filter(cant2 -> cant2 >= NumbersEnum.MINIMUM_CANT_MUTANT.getValue())
+                .map(unused -> Boolean.TRUE )
+                .orElseGet(() -> validateObliqueUpSequences(adnSequence));
+    }
+    private List<String> getVerticalList(ADNSequence adnSequence) {
+        return IntStream.range(0, adnSequence.getDna().size())
+                .mapToObj(value -> getVerticalValues(adnSequence, value))
+                .collect(Collectors.toList());
+    }
+
+    private String getVerticalValues(ADNSequence adnSequence, int value) {
+        return adnSequence.getDna().stream()
+                .map(s -> s.charAt(value))
+                .map(Object::toString)
+                .collect(Collectors.joining());
+    }
+
+    private boolean validateObliqueUpSequences(ADNSequence adnSequence)
     {
         return false;
     }

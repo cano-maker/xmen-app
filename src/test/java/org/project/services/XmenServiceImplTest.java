@@ -70,7 +70,7 @@ class XmenServiceImplTest {
     static Stream<Arguments> parametersWhenIsNotMutant(){
         return Stream.of(
                 Arguments.arguments(List.of("AAAACG","CAGTGC","TTGTGT","AGAAGG","CTCCTA","TCACTG")),
-                Arguments.arguments(List.of("AAATCG","CAGTGC","TTTTGT","AGAAGG","CTCCTA","TCACTG"))
+                Arguments.arguments(List.of("AAATCG","CAGTGC","TTATGT","AGATGG","CTCCTA","TCACTG"))
         );
     }
 
