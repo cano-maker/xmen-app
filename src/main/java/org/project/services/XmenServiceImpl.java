@@ -8,6 +8,8 @@ import org.project.interfaces.IXmenService;
 import org.project.models.ADNSequence;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -43,6 +45,14 @@ public class XmenServiceImpl implements IXmenService {
     private boolean isValidSequence(Long size, ADNSequence adnSequence) {
         return adnSequence.getDna().stream()
                 .map(String::toUpperCase)
-                .allMatch(s -> s.length() == size);
+                .allMatch(sequence -> ((sequence.length() == size) && validateCharacters(sequence)));
+    }
+
+    private boolean validateCharacters(String sequence)
+    {
+        Pattern pat = Pattern.compile("(A|T|G|C)+");
+        Matcher mat = pat.matcher(sequence);
+
+        return mat.matches();
     }
 }
