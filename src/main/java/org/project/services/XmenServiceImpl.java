@@ -61,8 +61,13 @@ public class XmenServiceImpl implements IXmenService {
     {
         return Optional.of(validateHorizontalSequences(adnSequence))
                 .filter(Boolean.TRUE::equals)
-                .map(unused -> adnSequence)
+                .map(state -> getaVoid(adnSequence, state))
                 .orElseThrow(() -> new DNASequenceNotValid("Is not a mutant!"));
+    }
+
+    private ADNSequence getaVoid(ADNSequence adnSequence, Boolean aBoolean) {
+        adnSequence.setMutant(aBoolean);
+        return adnSequence;
     }
 
     private boolean validateHorizontalSequences(ADNSequence adnSequence)
@@ -114,35 +119,60 @@ public class XmenServiceImpl implements IXmenService {
 
         var mainOblique = getObliquesInferiors(adnSequence.getDna());
         var mainInvertOblique = getObliquesInferiorsInvert(adnSequence.getDna(), adnSequence.getDna().size() - 1);
-        var obliquesInferiors = getListObliquesInferiors(adnSequence);
-        var obliquesInferiorsRevert = getListObliquesInferiorsInvert(adnSequence);
+        var obliquesInferiors = getListObliquesInferiors(adnSequence.getDna());
+        var obliquesInferiorsRevert = getListObliquesInferiorsInvert(adnSequence.getDna());
 
+        var verticalList = getVerticalList(adnSequence);
+        var obliquesSuperior = getListObliquesInferiors(verticalList);
+        var verticalListInvert = getVerticalListInvert(adnSequence);
+        var obliquesSuperiorInvert = getListObliquesInferiors(verticalListInvert);
 
-        return false;
+        obliquesInferiors.add(mainOblique);
+        obliquesInferiorsRevert.add(mainInvertOblique);
+
+        obliquesInferiors.addAll(obliquesSuperior);
+        obliquesInferiors.addAll(obliquesInferiorsRevert);
+        obliquesInferiors.addAll(obliquesSuperiorInvert);
+
+        return Optional.of(validatePatternMutant(obliquesInferiors))
+                .map(Long::intValue)
+                .map(adnSequence::incrementCountMutantSequences)
+                .filter(cant2 -> cant2 >= NumbersEnum.MINIMUM_CANT_MUTANT.getValue())
+                .map(unused -> Boolean.TRUE )
+                .orElse(Boolean.FALSE);
     }
 
-    private List<String> getListObliquesInferiorsInvert(ADNSequence adnSequence)
+    private List<String> getVerticalListInvert(ADNSequence adnSequence) {
+        int start = 0;
+        int end = adnSequence.getDna().size();
+        return IntStream.range(start,end)
+                .map(i -> start + (end - 1 - i))
+                .mapToObj(value -> getVerticalValues(adnSequence, value))
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getListObliquesInferiorsInvert(List<String> adnSequence)
     {
-        return IntStream.range(0, adnSequence.getDna().size() - NumbersEnum.MINIMUM_SIZE.getValue())
+        return IntStream.range(0, adnSequence.size() - NumbersEnum.MINIMUM_SIZE.getValue())
                 .mapToObj(value -> getObliqueInferiorValuesInvert(adnSequence, ++value))
                 .collect(Collectors.toList());
     }
 
-    private String getObliqueInferiorValuesInvert(ADNSequence adnSequence, int value)
+    private String getObliqueInferiorValuesInvert(List<String> adnSequence, int value)
     {
-        var sequences = adnSequence.getDna().subList(value, adnSequence.getDna().size());
-        return getObliquesInferiorsInvert(sequences, adnSequence.getDna().size() - 1);
+        var sequences = adnSequence.subList(value, adnSequence.size());
+        return getObliquesInferiorsInvert(sequences, adnSequence.size() - 1);
     }
 
-    private List<String> getListObliquesInferiors(ADNSequence adnSequence) {
-        return IntStream.range(0, adnSequence.getDna().size() - NumbersEnum.MINIMUM_SIZE.getValue())
+    private List<String> getListObliquesInferiors(List<String> adnSequence) {
+        return IntStream.range(0, adnSequence.size() - NumbersEnum.MINIMUM_SIZE.getValue())
                 .mapToObj(value -> getObliqueInferiorValues(adnSequence, ++value))
                 .collect(Collectors.toList());
     }
 
-    private String getObliqueInferiorValues(ADNSequence adnSequence, int value)
+    private String getObliqueInferiorValues(List<String> adnSequence, int value)
     {
-        var sequences = adnSequence.getDna().subList(value, adnSequence.getDna().size());
+        var sequences = adnSequence.subList(value, adnSequence.size());
         return getObliquesInferiors(sequences);
     }
 
