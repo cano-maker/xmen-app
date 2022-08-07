@@ -9,6 +9,7 @@ import org.project.models.ADNSequence;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -109,9 +110,57 @@ public class XmenServiceImpl implements IXmenService {
                 .collect(Collectors.joining());
     }
 
-    private boolean validateObliqueUpSequences(ADNSequence adnSequence)
-    {
+    private boolean validateObliqueUpSequences(ADNSequence adnSequence) {
+
+        var mainOblique = getObliquesInferiors(adnSequence.getDna());
+        var mainInvertOblique = getObliquesInferiorsInvert(adnSequence.getDna(), adnSequence.getDna().size() - 1);
+        var obliquesInferiors = getListObliquesInferiors(adnSequence);
+        var obliquesInferiorsRevert = getListObliquesInferiorsInvert(adnSequence);
+
+
         return false;
+    }
+
+    private List<String> getListObliquesInferiorsInvert(ADNSequence adnSequence)
+    {
+        return IntStream.range(0, adnSequence.getDna().size() - NumbersEnum.MINIMUM_SIZE.getValue())
+                .mapToObj(value -> getObliqueInferiorValuesInvert(adnSequence, ++value))
+                .collect(Collectors.toList());
+    }
+
+    private String getObliqueInferiorValuesInvert(ADNSequence adnSequence, int value)
+    {
+        var sequences = adnSequence.getDna().subList(value, adnSequence.getDna().size());
+        return getObliquesInferiorsInvert(sequences, adnSequence.getDna().size() - 1);
+    }
+
+    private List<String> getListObliquesInferiors(ADNSequence adnSequence) {
+        return IntStream.range(0, adnSequence.getDna().size() - NumbersEnum.MINIMUM_SIZE.getValue())
+                .mapToObj(value -> getObliqueInferiorValues(adnSequence, ++value))
+                .collect(Collectors.toList());
+    }
+
+    private String getObliqueInferiorValues(ADNSequence adnSequence, int value)
+    {
+        var sequences = adnSequence.getDna().subList(value, adnSequence.getDna().size());
+        return getObliquesInferiors(sequences);
+    }
+
+    private String getObliquesInferiorsInvert(List<String> sequences, int initValue) {
+
+        AtomicInteger count = new AtomicInteger(initValue);
+        return sequences.stream()
+                .map(s -> s.charAt(count.getAndDecrement()))
+                .map(Object::toString)
+                .collect(Collectors.joining());
+    }
+
+    private String getObliquesInferiors(List<String> sequences) {
+        AtomicInteger count = new AtomicInteger();
+        return sequences.stream()
+                .map(s -> s.charAt(count.getAndIncrement()))
+                .map(Object::toString)
+                .collect(Collectors.joining());
     }
 
 }
