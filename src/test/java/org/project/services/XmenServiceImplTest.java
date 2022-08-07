@@ -53,6 +53,27 @@ class XmenServiceImplTest {
 
     }
 
+    @ParameterizedTest
+    @MethodSource("parametersWhenIsNotMutant")
+    void shouldFailWhenIsNotAMutant(List<String> sequence)
+    {
+        ADNSequence model = getAdnSequenceUpperThanFour(sequence);
+
+        var result = underTest.processADN(model).await();
+
+        DNASequenceNotValid exception = assertThrows(DNASequenceNotValid.class, result::indefinitely);
+
+        assertEquals("Is not a mutant!", exception.getMessage());
+
+    }
+
+    static Stream<Arguments> parametersWhenIsNotMutant(){
+        return Stream.of(
+                Arguments.arguments(List.of("AAAACG","CAGTGC","TTGTGT","AGAAGG","CTCCTA","TCACTG")),
+                Arguments.arguments(List.of("AAATCG","CAGTGC","TTTTGT","AGAAGG","CTCCTA","TCACTG"))
+        );
+    }
+
     static Stream<Arguments> parameterFails(){
         return Stream.of(
                 Arguments.arguments(List.of("ATGCG","CAG","TTATGT","AGAAGG","CCCC","TCACTG")),

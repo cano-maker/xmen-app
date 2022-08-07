@@ -40,6 +40,11 @@ public class ADNSequence
         return countMutantSequences;
     }
 
+    public int incrementCountMutantSequences(int cant)
+    {
+        return countMutantSequences=+cant;
+    }
+
     public void setCountMutantSequences(int countMutantSequences) {
         this.countMutantSequences = countMutantSequences;
     }
