@@ -1,4 +1,4 @@
-package org.project;
+package org.project.resources;
 
 import io.smallrye.mutiny.Uni;
 
