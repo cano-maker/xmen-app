@@ -85,7 +85,8 @@ class XmenServiceImplTest {
                 Arguments.arguments(List.of("ATGCG","CAGTGKC","TTATGT","AGAAGG","CCCCTA","TCACTG")),
                 Arguments.arguments(List.of("ATGCG","CAGTGC","TTATGT","AGAAGG++","CCCCTA","TCACTG")),
                 Arguments.arguments(List.of("ATG454CG","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG")),
-                Arguments.arguments(List.of("ATGACGT","CAGTGCG","TTATGTG","AAG7GGA","CCCCTAG","TCACTGG","TCACTGG"))
+                Arguments.arguments(List.of("ATGACGT","CAGTGCG","TTATGTG","AAG7GGA","CCCCTAG","TCACTGG","TCACTGG")),
+                Arguments.arguments(List.of("AAADCG","ACCCCC","ATGTCT","AGAACG","CTCCCA","TCACTG"))
         );
     }
 

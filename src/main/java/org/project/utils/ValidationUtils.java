@@ -2,6 +2,7 @@ package org.project.utils;
 
 import org.project.models.ADNSequence;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +51,7 @@ public final class ValidationUtils
     public static<T> List<T> concatenate(List<T>... lists)
     {
         return Stream.of(lists)
-                .flatMap(x -> x.stream())
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 }
