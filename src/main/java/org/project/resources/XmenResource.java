@@ -29,7 +29,7 @@ public class XmenResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Uni<Response> mutant(ADNSequence sequence) {
         return xmenService.processADN(sequence)
-                .onItem().transform(result -> generateOk(result))
+                .onItem().transform(XmenResource::generateOk)
                 .onFailure().recoverWithItem(throwable -> generateError(throwable.getMessage()));
     }
 

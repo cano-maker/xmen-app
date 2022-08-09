@@ -1,12 +1,16 @@
 package org.project.services;
 
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
+import org.project.entities.DNARecord;
 import org.project.enums.NumbersEnum;
 import org.project.exceptions.DNASequenceNotValid;
 import org.project.interfaces.IValidationHorizontalSequence;
 import org.project.interfaces.IXmenService;
 import org.project.models.ADNSequence;
+import org.project.respository.DNARecordRepository;
+
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -17,16 +21,36 @@ import java.util.stream.Collectors;
 public class XmenServiceImpl implements IXmenService {
 
     private final IValidationHorizontalSequence validationHorizontalSequence;
+    private final DNARecordRepository dnaRepository;
 
-    public XmenServiceImpl(IValidationHorizontalSequence validationHorizontalSequence) {
+
+    public XmenServiceImpl(IValidationHorizontalSequence validationHorizontalSequence, DNARecordRepository dnaRepository) {
         this.validationHorizontalSequence = validationHorizontalSequence;
+        this.dnaRepository = dnaRepository;
     }
 
     @Override
     public Uni<ADNSequence> processADN(ADNSequence adnSequence) {
         return validateSizeLowThanFour(adnSequence)
                 .onItem().transform(aLong -> validateSequence(aLong, adnSequence))
-                .onItem().transform(unused -> validateIfIsMutant(adnSequence));
+                .onItem().transform(unused -> validateIfIsMutant(adnSequence))
+                .onItem().transformToUni(this::persistResult)
+                .onItem().transform(adnSequence1 -> validateResult(adnSequence1));
+    }
+
+    private ADNSequence validateResult(ADNSequence adnSequence)
+    {
+        return Optional.of(adnSequence.isMutant())
+                .filter(Boolean.TRUE::equals)
+                .map(unused -> adnSequence)
+                .orElseThrow(() -> new DNASequenceNotValid("It's not mutant."));
+    }
+
+    @ReactiveTransactional
+    public Uni<ADNSequence> persistResult(ADNSequence adnSequence)
+    {
+        return dnaRepository.persist(new DNARecord(adnSequence.isMutant()))
+                .onItem().transform(unused -> adnSequence);
     }
 
     private Uni<Long> validateSizeLowThanFour(ADNSequence adnSequence) {
@@ -64,9 +88,8 @@ public class XmenServiceImpl implements IXmenService {
     private ADNSequence validateIfIsMutant(ADNSequence adnSequence)
     {
         return Optional.of(validationHorizontalSequence.processADN(adnSequence))
-                .filter(Boolean.TRUE::equals)
                 .map(state -> setIsMutantAndKeepFlow(adnSequence, state))
-                .orElseThrow(() -> new DNASequenceNotValid("Is not a mutant!"));
+                .orElse(adnSequence);
     }
 
     private ADNSequence setIsMutantAndKeepFlow(ADNSequence adnSequence, Boolean aBoolean) {

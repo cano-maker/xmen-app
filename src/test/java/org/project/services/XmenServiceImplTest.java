@@ -1,12 +1,15 @@
 package org.project.services;
 
+import io.smallrye.mutiny.Uni;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.project.entities.DNARecord;
 import org.project.exceptions.DNASequenceNotValid;
 import org.project.models.ADNSequence;
+import org.project.respository.DNARecordRepository;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -21,13 +24,15 @@ class XmenServiceImplTest {
 
     private XmenServiceImpl underTest;
     private ValidationHorizontalSequenceImpl validationHorizontalSequence;
+    private DNARecordRepository dnaRecordRepository;
 
 
     @BeforeEach
     void setUp()
     {
         validationHorizontalSequence = mock(ValidationHorizontalSequenceImpl.class);
-        underTest = new XmenServiceImpl(validationHorizontalSequence);
+        dnaRecordRepository = mock(DNARecordRepository.class);
+        underTest = new XmenServiceImpl(validationHorizontalSequence, dnaRecordRepository);
     }
 
     @Test
@@ -54,29 +59,35 @@ class XmenServiceImplTest {
     @Test
     void shouldFailWhenIsNotAMutant()
     {
+        DNARecord entity = new DNARecord(Boolean.FALSE);
         ADNSequence model = getAdnSequenceUpperThanFour();
         when(validationHorizontalSequence.processADN(model)).thenReturn(Boolean.FALSE);
+        when(dnaRecordRepository.persist(entity)).thenReturn(Uni.createFrom().item(entity));
 
         var result = underTest.processADN(model).await();
         DNASequenceNotValid exception = assertThrows(DNASequenceNotValid.class, result::indefinitely);
 
-        assertEquals("Is not a mutant!", exception.getMessage());
+        assertEquals("It's not mutant.", exception.getMessage());
         verify(validationHorizontalSequence, times(1)).processADN(model);
+        verify(dnaRecordRepository, times(1)).persist(entity);
 
     }
 
     @Test
     void shouldSuccessWhenIsAMutant()
     {
+        DNARecord entity = new DNARecord(Boolean.TRUE);
         ADNSequence model = getAdnSequenceUpperThanFour();
         model.setMutant(Boolean.TRUE);
 
         when(validationHorizontalSequence.processADN(model)).thenReturn(Boolean.TRUE);
+        when(dnaRecordRepository.persist(entity)).thenReturn(Uni.createFrom().item(entity));
 
         var result = underTest.processADN(model).await().indefinitely();
 
         assertEquals(model.isMutant(), result.isMutant());
         verify(validationHorizontalSequence, times(1)).processADN(model);
+        verify(dnaRecordRepository, times(1)).persist(entity);
 
     }
     static Stream<Arguments> parameterFails(){
