@@ -25,7 +25,7 @@ public class ValidationHorizontalSequenceImpl implements IValidationHorizontalSe
         return Optional.of(validatePatternMutant(DNASequence.getDna()))
                 .map(DNASequence::incrementCountMutantSequences)
                 .filter(cant -> areIntegerUpperOrEqualsThan(cant,NumbersEnum.MINIMUM_CANT_MUTANT.getValue()))
-                .map(unused -> Boolean.TRUE)
+                .map(unused -> true)
                 .orElseGet(() -> validateVerticalSequences.processADN(DNASequence));
     }
 }

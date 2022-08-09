@@ -8,6 +8,9 @@ import org.project.models.DNAStats;
 import org.project.respository.DNARecordRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class DNARecordServiceImpl implements IDNARecordService {
@@ -26,6 +29,42 @@ public class DNARecordServiceImpl implements IDNARecordService {
 
     @Override
     public Uni<DNAStats> getStats() {
-        return null;
+        return dnaRepository.listAll()
+                .map(this::createDNAStats);
     }
+
+    private DNAStats createDNAStats(List<DNARecord> dnaRecords)
+    {
+        DNAStats dnaStats = new DNAStats();
+        dnaStats.setCountHumanDna(countHuman(dnaRecords));
+        dnaStats.setCountMutantDna(countMutant(dnaRecords));
+        dnaStats.setRatio(calculateRation(dnaStats.getCountMutantDna(), dnaStats.getCountHumanDna()));
+        return dnaStats;
+
+    }
+    private Long countHuman(List<DNARecord> dnaRecords)
+    {
+        return dnaRecords.stream()
+                .map(DNARecord::isMutant)
+                .filter(Boolean.FALSE::equals)
+                .collect(Collectors.counting());
+    }
+
+    private Long countMutant(List<DNARecord> dnaRecords)
+    {
+        return dnaRecords.stream()
+                .map(DNARecord::isMutant)
+                .filter(Boolean.TRUE::equals)
+                .collect(Collectors.counting());
+    }
+
+    private Double calculateRation(Long countMutantDna, Long countHumanDna)
+    {
+        return Optional.empty()
+                .map(o -> (double)countMutantDna/countHumanDna)
+                .orElse(0.0);
+    }
+
+
+
 }

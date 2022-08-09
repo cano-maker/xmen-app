@@ -17,24 +17,24 @@ import static org.project.utils.ValidationUtils.*;
 public class ValidateObliqueSequencesImpl implements IValidateObliqueSequence
 {
     @Override
-    public boolean processADN(DNASequence DNASequence) {
+    public boolean processADN(DNASequence dnaSequence) {
 
-        return Optional.of(validatePatternMutant(getAllObliques(DNASequence)))
-                .map(DNASequence::incrementCountMutantSequences)
+        return Optional.of(validatePatternMutant(getAllObliques(dnaSequence)))
+                .map(dnaSequence::incrementCountMutantSequences)
                 .filter(cant2 -> areIntegerUpperOrEqualsThan(cant2,NumbersEnum.MINIMUM_CANT_MUTANT.getValue()))
-                .map(unused -> Boolean.TRUE )
-                .orElse(Boolean.FALSE);
+                .map(unused -> true)
+                .orElse(false);
     }
 
-    private List<String> getAllObliques(DNASequence DNASequence) {
-        var mainOblique = getObliquesInferiors(DNASequence.getDna());
-        var mainInvertOblique = getObliquesInferiorsInvert(DNASequence.getDna(), DNASequence.getDna().size() - 1);
-        var obliquesInferiors = getListObliquesInferiors(DNASequence.getDna());
-        var obliquesInferiorsRevert = getListObliquesInferiorsInvert(DNASequence.getDna());
+    private List<String> getAllObliques(DNASequence dnaSequence) {
+        var mainOblique = getObliquesInferiors(dnaSequence.getDna());
+        var mainInvertOblique = getObliquesInferiorsInvert(dnaSequence.getDna(), dnaSequence.getDna().size() - 1);
+        var obliquesInferiors = getListObliquesInferiors(dnaSequence.getDna());
+        var obliquesInferiorsRevert = getListObliquesInferiorsInvert(dnaSequence.getDna());
 
-        var verticalList = getVerticalList(DNASequence);
+        var verticalList = getVerticalList(dnaSequence);
         var obliquesSuperior = getListObliquesInferiors(verticalList);
-        var verticalListInvert = getVerticalListInvert(DNASequence);
+        var verticalListInvert = getVerticalListInvert(dnaSequence);
         var obliquesSuperiorInvert = getListObliquesInferiors(verticalListInvert);
 
         obliquesInferiors.add(mainOblique);
@@ -43,24 +43,24 @@ public class ValidateObliqueSequencesImpl implements IValidateObliqueSequence
         return concatenate(obliquesInferiors,obliquesInferiorsRevert,obliquesSuperior,obliquesSuperiorInvert);
     }
 
-    private List<String> getVerticalList(DNASequence DNASequence) {
-        return IntStream.range(0, DNASequence.getDna().size())
-                .mapToObj(value -> getVerticalValues(DNASequence, value))
+    private List<String> getVerticalList(DNASequence dnaSequence) {
+        return IntStream.range(0, dnaSequence.getDna().size())
+                .mapToObj(value -> getVerticalValues(dnaSequence, value))
                 .collect(Collectors.toList());
     }
 
-    private String getVerticalValues(DNASequence DNASequence, int value) {
-        return DNASequence.getDna().stream()
+    private String getVerticalValues(DNASequence dnaSequence, int value) {
+        return dnaSequence.getDna().stream()
                 .map(s -> s.charAt(value))
                 .map(Object::toString)
                 .collect(Collectors.joining());
     }
-    private List<String> getVerticalListInvert(DNASequence DNASequence) {
+    private List<String> getVerticalListInvert(DNASequence dnaSequence) {
         int start = 0;
-        int end = DNASequence.getDna().size();
+        int end = dnaSequence.getDna().size();
         return IntStream.range(start,end)
                 .map(i -> start + (end - 1 - i))
-                .mapToObj(value -> getVerticalValues(DNASequence, value))
+                .mapToObj(value -> getVerticalValues(dnaSequence, value))
                 .collect(Collectors.toList());
     }
 

@@ -25,7 +25,7 @@ public class ValidationVerticalSequenceImpl implements IValidationVerticalSequen
         return Optional.of(validatePatternMutant(invertSequences(DNASequence)))
                 .map(DNASequence::incrementCountMutantSequences)
                 .filter(cant2 -> areIntegerUpperOrEqualsThan(cant2,NumbersEnum.MINIMUM_CANT_MUTANT.getValue()))
-                .map(unused -> Boolean.TRUE )
+                .map(unused -> true)
                 .orElseGet(() -> validateObliqueSequence.processADN(DNASequence));
     }
 }
