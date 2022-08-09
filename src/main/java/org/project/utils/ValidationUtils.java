@@ -1,6 +1,6 @@
 package org.project.utils;
 
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,14 +30,14 @@ public final class ValidationUtils
         return mat.find();
     }
 
-    public static List<String> invertSequences(ADNSequence adnSequence) {
-        return IntStream.range(0, adnSequence.getDna().size())
-                .mapToObj(value -> getInvertValues(adnSequence, value))
+    public static List<String> invertSequences(DNASequence DNASequence) {
+        return IntStream.range(0, DNASequence.getDna().size())
+                .mapToObj(value -> getInvertValues(DNASequence, value))
                 .collect(Collectors.toList());
     }
 
-    private static String getInvertValues(ADNSequence adnSequence, int value) {
-        return adnSequence.getDna().stream()
+    private static String getInvertValues(DNASequence DNASequence, int value) {
+        return DNASequence.getDna().stream()
                 .map(sequence -> sequence.charAt(value))
                 .map(Object::toString)
                 .collect(Collectors.joining());

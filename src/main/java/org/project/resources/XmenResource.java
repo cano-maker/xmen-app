@@ -2,38 +2,59 @@ package org.project.resources;
 
 import io.smallrye.mutiny.Uni;
 
-import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
+import org.project.interfaces.IDNARecordService;
 import org.project.interfaces.IXmenService;
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
+import org.project.models.DNAStats;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 
-@Path("/mutant")
+@Path("")
 @ApplicationScoped
 public class XmenResource {
 
     private final IXmenService xmenService;
+    private final IDNARecordService dnaRecordRepository;
 
-    public XmenResource(IXmenService xmenService) {
+    public XmenResource(IXmenService xmenService, IDNARecordService dnaRecordRepository) {
         this.xmenService = xmenService;
+        this.dnaRecordRepository = dnaRecordRepository;
     }
 
+    @Path("/mutant")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Uni<Response> mutant(ADNSequence sequence) {
+    public Uni<Response> validateIfIsMutant(DNASequence sequence) {
         return xmenService.processADN(sequence)
                 .onItem().transform(XmenResource::generateOk)
                 .onFailure().recoverWithItem(throwable -> generateError(throwable.getMessage()));
     }
 
-    private static Response generateOk(ADNSequence result)
+    @Path("/stats")
+    @GET
+    public Uni<Response> getStats()
+    {
+        return dnaRecordRepository.getStats()
+                .map(XmenResource::generateOk)
+                .onFailure().recoverWithItem(throwable -> generateError(throwable.getMessage()));
+    }
+
+
+    private static Response generateOk(DNAStats result)
+    {
+        return Response.status(Response.Status.OK)
+                .entity(result)
+                .build();
+    }
+
+    private static Response generateOk(DNASequence result)
     {
         return Response.status(Response.Status.OK)
                 .entity(result)

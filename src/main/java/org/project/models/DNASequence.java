@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
-public class ADNSequence
+public class DNASequence
 {
     private List<String> dna;
 
@@ -14,9 +14,9 @@ public class ADNSequence
     @JsonIgnore
     private int countMutantSequences;
 
-    public ADNSequence() {}
+    public DNASequence() {}
 
-    public ADNSequence(List<String> dna) {
+    public DNASequence(List<String> dna) {
         this.dna = dna;
     }
 

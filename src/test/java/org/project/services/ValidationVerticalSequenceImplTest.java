@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -28,7 +28,7 @@ class ValidationVerticalSequenceImplTest {
     @MethodSource("parametersWhenNoFoundMutantSequences")
     void shouldCallVerticalValidationWhenNotFondMutantSequence(List<String> sequences)
     {
-        ADNSequence model = getAdnSequenceUpperThanFour(sequences);
+        DNASequence model = getAdnSequenceUpperThanFour(sequences);
 
         when(validateObliqueSequences.processADN(model)).thenReturn(Boolean.FALSE);
 
@@ -43,7 +43,7 @@ class ValidationVerticalSequenceImplTest {
     @MethodSource("parametersWhenFoundMutantSequences")
     void shouldReturnBooleanWhenFondMutantSequence(List<String> sequences)
     {
-        ADNSequence model = getAdnSequenceUpperThanFour(sequences);
+        DNASequence model = getAdnSequenceUpperThanFour(sequences);
 
         var result = underTest.processADN(model);
 
@@ -66,9 +66,9 @@ class ValidationVerticalSequenceImplTest {
         );
     }
 
-    private ADNSequence getAdnSequenceUpperThanFour(List<String> ADNSequence)
+    private DNASequence getAdnSequenceUpperThanFour(List<String> ADNSequence)
     {
-        return new ADNSequence(ADNSequence);
+        return new DNASequence(ADNSequence);
     }
 
 }

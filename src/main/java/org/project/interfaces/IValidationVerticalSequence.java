@@ -1,8 +1,8 @@
 package org.project.interfaces;
 
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
 
 public interface IValidationVerticalSequence
 {
-    boolean processADN(ADNSequence adnSequence);
+    boolean processADN(DNASequence DNASequence);
 }

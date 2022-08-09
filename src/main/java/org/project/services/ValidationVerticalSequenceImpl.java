@@ -4,7 +4,7 @@ package org.project.services;
 import org.project.enums.NumbersEnum;
 import org.project.interfaces.IValidateObliqueSequence;
 import org.project.interfaces.IValidationVerticalSequence;
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Optional;
 
@@ -21,11 +21,11 @@ public class ValidationVerticalSequenceImpl implements IValidationVerticalSequen
     }
 
     @Override
-    public boolean processADN(ADNSequence adnSequence) {
-        return Optional.of(validatePatternMutant(invertSequences(adnSequence)))
-                .map(adnSequence::incrementCountMutantSequences)
+    public boolean processADN(DNASequence DNASequence) {
+        return Optional.of(validatePatternMutant(invertSequences(DNASequence)))
+                .map(DNASequence::incrementCountMutantSequences)
                 .filter(cant2 -> areIntegerUpperOrEqualsThan(cant2,NumbersEnum.MINIMUM_CANT_MUTANT.getValue()))
                 .map(unused -> Boolean.TRUE )
-                .orElseGet(() -> validateObliqueSequence.processADN(adnSequence));
+                .orElseGet(() -> validateObliqueSequence.processADN(DNASequence));
     }
 }

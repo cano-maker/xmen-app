@@ -9,8 +9,7 @@ import org.project.exceptions.DNASequenceNotValid;
 import org.project.interfaces.IDNARecordService;
 import org.project.interfaces.IValidationHorizontalSequence;
 import org.project.interfaces.IXmenService;
-import org.project.models.ADNSequence;
-import org.project.respository.DNARecordRepository;
+import org.project.models.DNASequence;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Optional;
@@ -31,31 +30,30 @@ public class XmenServiceImpl implements IXmenService {
     }
 
     @Override
-    public Uni<ADNSequence> processADN(ADNSequence adnSequence) {
-        return validateSizeLowThanFour(adnSequence)
-                .onItem().transform(aLong -> validateSequence(aLong, adnSequence))
-                .onItem().transform(unused -> validateIfIsMutant(adnSequence))
+    public Uni<DNASequence> processADN(DNASequence DNASequence) {
+        return validateSizeLowThanFour(DNASequence)
+                .onItem().transform(aLong -> validateSequence(aLong, DNASequence))
+                .onItem().transform(unused -> validateIfIsMutant(DNASequence))
                 .onItem().transformToUni(this::persistResult)
                 .onItem().transform(adnSequence1 -> validateResult(adnSequence1));
     }
 
-    private ADNSequence validateResult(ADNSequence adnSequence)
+    private DNASequence validateResult(DNASequence DNASequence)
     {
-        return Optional.of(adnSequence.isMutant())
+        return Optional.of(DNASequence.isMutant())
                 .filter(Boolean.TRUE::equals)
-                .map(unused -> adnSequence)
+                .map(unused -> DNASequence)
                 .orElseThrow(() -> new DNASequenceNotValid("It's not mutant."));
     }
 
-    @ReactiveTransactional
-    public Uni<ADNSequence> persistResult(ADNSequence adnSequence)
+    public Uni<DNASequence> persistResult(DNASequence DNASequence)
     {
-        return dnaRepository.persistDNARecord(new DNARecord(adnSequence.isMutant()))
-                .onItem().transform(unused -> adnSequence);
+        return dnaRepository.persistDNARecord(new DNARecord(DNASequence.isMutant()))
+                .onItem().transform(unused -> DNASequence);
     }
 
-    private Uni<Long> validateSizeLowThanFour(ADNSequence adnSequence) {
-        return Multi.createFrom().iterable(adnSequence.getDna())
+    private Uni<Long> validateSizeLowThanFour(DNASequence DNASequence) {
+        return Multi.createFrom().iterable(DNASequence.getDna())
                 .collect().with(Collectors.counting())
                 .onItem().transform(this::validateSize);
     }
@@ -66,16 +64,16 @@ public class XmenServiceImpl implements IXmenService {
                 .orElseThrow( () -> new DNASequenceNotValid("Error, the size cant be lower than four") );
     }
 
-    private ADNSequence validateSequence(Long size, ADNSequence adnSequence)
+    private DNASequence validateSequence(Long size, DNASequence DNASequence)
     {
-        return Optional.of(isValidSequence(size, adnSequence))
+        return Optional.of(isValidSequence(size, DNASequence))
                 .filter(Boolean.TRUE::equals)
-                .map(unused -> adnSequence)
+                .map(unused -> DNASequence)
                 .orElseThrow(() -> new DNASequenceNotValid("Error, the secuence is not valid"));
     }
 
-    private boolean isValidSequence(Long size, ADNSequence adnSequence) {
-        return adnSequence.getDna().stream()
+    private boolean isValidSequence(Long size, DNASequence DNASequence) {
+        return DNASequence.getDna().stream()
                 .map(String::toUpperCase)
                 .allMatch(sequence -> ((sequence.length() == size) && validateCharacters(sequence)));
     }
@@ -86,15 +84,15 @@ public class XmenServiceImpl implements IXmenService {
         return mat.matches();
     }
 
-    private ADNSequence validateIfIsMutant(ADNSequence adnSequence)
+    private DNASequence validateIfIsMutant(DNASequence DNASequence)
     {
-        return Optional.of(validationHorizontalSequence.processADN(adnSequence))
-                .map(state -> setIsMutantAndKeepFlow(adnSequence, state))
-                .orElse(adnSequence);
+        return Optional.of(validationHorizontalSequence.processADN(DNASequence))
+                .map(state -> setIsMutantAndKeepFlow(DNASequence, state))
+                .orElse(DNASequence);
     }
 
-    private ADNSequence setIsMutantAndKeepFlow(ADNSequence adnSequence, Boolean aBoolean) {
-        adnSequence.setMutant(aBoolean);
-        return adnSequence;
+    private DNASequence setIsMutantAndKeepFlow(DNASequence DNASequence, Boolean aBoolean) {
+        DNASequence.setMutant(aBoolean);
+        return DNASequence;
     }
 }

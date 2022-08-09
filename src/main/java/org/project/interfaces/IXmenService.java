@@ -1,9 +1,9 @@
 package org.project.interfaces;
 
 import io.smallrye.mutiny.Uni;
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
 
 public interface IXmenService {
 
-    Uni<ADNSequence> processADN(ADNSequence adnSequence);
+    Uni<DNASequence> processADN(DNASequence DNASequence);
 }

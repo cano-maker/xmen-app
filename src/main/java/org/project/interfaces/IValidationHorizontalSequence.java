@@ -1,9 +1,8 @@
 package org.project.interfaces;
 
-import io.smallrye.mutiny.Uni;
-import org.project.models.ADNSequence;
+import org.project.models.DNASequence;
 
 public interface IValidationHorizontalSequence {
 
-    boolean processADN(ADNSequence adnSequence);
+    boolean processADN(DNASequence DNASequence);
 }

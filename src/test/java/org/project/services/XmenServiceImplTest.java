@@ -8,9 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.project.entities.DNARecord;
 import org.project.exceptions.DNASequenceNotValid;
-import org.project.interfaces.IDNARecordService;
-import org.project.models.ADNSequence;
-import org.project.respository.DNARecordRepository;
+import org.project.models.DNASequence;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -39,7 +37,7 @@ class XmenServiceImplTest {
     @Test
     void shouldFailWhenTheSizeLowThanFour()
     {
-        ADNSequence model = getAdnSequenceLowThanFour();
+        DNASequence model = getAdnSequenceLowThanFour();
         var result = underTest.processADN(model).await();
         DNASequenceNotValid exception = assertThrows(DNASequenceNotValid.class, result::indefinitely);
         assertEquals("Error, the size cant be lower than four", exception.getMessage());
@@ -50,7 +48,7 @@ class XmenServiceImplTest {
     @MethodSource("parameterFails")
     void shouldFailWhenTheSizeOfEachItemsIsNotTheSameThatTheSizeOfTheList(List<String> sequence)
     {
-        ADNSequence model = getAdnSequenceUpperThanFour(sequence);
+        DNASequence model = getAdnSequenceUpperThanFour(sequence);
         var result = underTest.processADN(model).await();
         DNASequenceNotValid exception = assertThrows(DNASequenceNotValid.class, result::indefinitely);
         assertEquals("Error, the secuence is not valid", exception.getMessage());
@@ -61,7 +59,7 @@ class XmenServiceImplTest {
     void shouldFailWhenIsNotAMutant()
     {
         DNARecord entity = new DNARecord(Boolean.FALSE);
-        ADNSequence model = getAdnSequenceUpperThanFour();
+        DNASequence model = getAdnSequenceUpperThanFour();
         when(validationHorizontalSequence.processADN(model)).thenReturn(Boolean.FALSE);
         when(dnaRecordRepository.persistDNARecord(entity)).thenReturn(Uni.createFrom().item(entity));
 
@@ -78,7 +76,7 @@ class XmenServiceImplTest {
     void shouldSuccessWhenIsAMutant()
     {
         DNARecord entity = new DNARecord(Boolean.TRUE);
-        ADNSequence model = getAdnSequenceUpperThanFour();
+        DNASequence model = getAdnSequenceUpperThanFour();
         model.setMutant(Boolean.TRUE);
 
         when(validationHorizontalSequence.processADN(model)).thenReturn(Boolean.TRUE);
@@ -102,21 +100,21 @@ class XmenServiceImplTest {
         );
     }
 
-    private ADNSequence getAdnSequenceLowThanFour()
+    private DNASequence getAdnSequenceLowThanFour()
     {
        List<String> ADNSequence = List.of("ATGCGA","CAGTGC","TTATGT");
-       return new ADNSequence(ADNSequence);
+       return new DNASequence(ADNSequence);
     }
 
-    private ADNSequence getAdnSequenceUpperThanFour()
+    private DNASequence getAdnSequenceUpperThanFour()
     {
         List<String> ADNSequence = List.of("AAAACG","CAGTGC","TTGTGT","AGAAGG","CTCCTA","TCACTG");
-        return new ADNSequence(ADNSequence);
+        return new DNASequence(ADNSequence);
     }
 
-    private ADNSequence getAdnSequenceUpperThanFour(List<String> ADNSequence)
+    private DNASequence getAdnSequenceUpperThanFour(List<String> ADNSequence)
     {
-        return new ADNSequence(ADNSequence);
+        return new DNASequence(ADNSequence);
     }
 
 }
