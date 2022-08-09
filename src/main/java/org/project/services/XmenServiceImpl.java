@@ -6,6 +6,7 @@ import io.smallrye.mutiny.Uni;
 import org.project.entities.DNARecord;
 import org.project.enums.NumbersEnum;
 import org.project.exceptions.DNASequenceNotValid;
+import org.project.interfaces.IDNARecordService;
 import org.project.interfaces.IValidationHorizontalSequence;
 import org.project.interfaces.IXmenService;
 import org.project.models.ADNSequence;
@@ -21,10 +22,10 @@ import java.util.stream.Collectors;
 public class XmenServiceImpl implements IXmenService {
 
     private final IValidationHorizontalSequence validationHorizontalSequence;
-    private final DNARecordRepository dnaRepository;
+    private final IDNARecordService dnaRepository;
 
 
-    public XmenServiceImpl(IValidationHorizontalSequence validationHorizontalSequence, DNARecordRepository dnaRepository) {
+    public XmenServiceImpl(IValidationHorizontalSequence validationHorizontalSequence, IDNARecordService dnaRepository) {
         this.validationHorizontalSequence = validationHorizontalSequence;
         this.dnaRepository = dnaRepository;
     }
@@ -49,7 +50,7 @@ public class XmenServiceImpl implements IXmenService {
     @ReactiveTransactional
     public Uni<ADNSequence> persistResult(ADNSequence adnSequence)
     {
-        return dnaRepository.persist(new DNARecord(adnSequence.isMutant()))
+        return dnaRepository.persistDNARecord(new DNARecord(adnSequence.isMutant()))
                 .onItem().transform(unused -> adnSequence);
     }
 

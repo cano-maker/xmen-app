@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.project.entities.DNARecord;
 import org.project.exceptions.DNASequenceNotValid;
+import org.project.interfaces.IDNARecordService;
 import org.project.models.ADNSequence;
 import org.project.respository.DNARecordRepository;
 
@@ -24,14 +25,14 @@ class XmenServiceImplTest {
 
     private XmenServiceImpl underTest;
     private ValidationHorizontalSequenceImpl validationHorizontalSequence;
-    private DNARecordRepository dnaRecordRepository;
+    private DNARecordServiceImpl dnaRecordRepository;
 
 
     @BeforeEach
     void setUp()
     {
         validationHorizontalSequence = mock(ValidationHorizontalSequenceImpl.class);
-        dnaRecordRepository = mock(DNARecordRepository.class);
+        dnaRecordRepository = mock(DNARecordServiceImpl.class);
         underTest = new XmenServiceImpl(validationHorizontalSequence, dnaRecordRepository);
     }
 
@@ -62,14 +63,14 @@ class XmenServiceImplTest {
         DNARecord entity = new DNARecord(Boolean.FALSE);
         ADNSequence model = getAdnSequenceUpperThanFour();
         when(validationHorizontalSequence.processADN(model)).thenReturn(Boolean.FALSE);
-        when(dnaRecordRepository.persist(entity)).thenReturn(Uni.createFrom().item(entity));
+        when(dnaRecordRepository.persistDNARecord(entity)).thenReturn(Uni.createFrom().item(entity));
 
         var result = underTest.processADN(model).await();
         DNASequenceNotValid exception = assertThrows(DNASequenceNotValid.class, result::indefinitely);
 
         assertEquals("It's not mutant.", exception.getMessage());
         verify(validationHorizontalSequence, times(1)).processADN(model);
-        verify(dnaRecordRepository, times(1)).persist(entity);
+        verify(dnaRecordRepository, times(1)).persistDNARecord(entity);
 
     }
 
@@ -81,13 +82,13 @@ class XmenServiceImplTest {
         model.setMutant(Boolean.TRUE);
 
         when(validationHorizontalSequence.processADN(model)).thenReturn(Boolean.TRUE);
-        when(dnaRecordRepository.persist(entity)).thenReturn(Uni.createFrom().item(entity));
+        when(dnaRecordRepository.persistDNARecord(entity)).thenReturn(Uni.createFrom().item(entity));
 
         var result = underTest.processADN(model).await().indefinitely();
 
         assertEquals(model.isMutant(), result.isMutant());
         verify(validationHorizontalSequence, times(1)).processADN(model);
-        verify(dnaRecordRepository, times(1)).persist(entity);
+        verify(dnaRecordRepository, times(1)).persistDNARecord(entity);
 
     }
     static Stream<Arguments> parameterFails(){
