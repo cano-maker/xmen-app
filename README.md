@@ -1,60 +1,36 @@
-# xmen-app Project
+# xmen-app Challenge Mercado Libre
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este proyecto usa Quarkus como framework de desarrollo para Java
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+This project uses Quarkus, the Supersonic Subatomic Java Framework( https://quarkus.io/)
+esta contruido utilizando diferentes paradigmas de programacion como Programacion funcional,
+reactiva y programacion orientada a objetos.
 
-## Running the application in dev mode
+Se utiliza Google App Engine para alojar el API desarrollada y una base de datos PostgreSQL.
 
-You can run your application in dev mode that enables live coding using:
+> **_NOTE:_**  actualmente la base de datos funciona unicamente de forma local, en un futuro estara en CloudSQL
+
+## Requisitos
+
+Se necesita instalar los siguientes programas:
+- Docker : https://docs.docker.com/engine/install/
+- Cualquier SQL Client, se recomienda DBeaver(https://dbeaver.io/)
+
+## Configuracion PostgreSQL en Docker
+
+- Abrir una consola y ubicarse en la ruta `../xmen-app/devops/local/pgsql` ejecutar el comando siguente para instalar la imagen de PostgreSQL
+```shell script
+docker-compose up -d
+```
+- Conectarse a PostgreSQL con el SQL Client e ingresar el usuario y la contraseña `postgres`.
+- Crear la base de datos `dnarecord`
+
+## Correr la applicacion 
+
+Correr la aplicación utilizando el comando:
 ```shell script
 ./mvnw compile quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
+> **_NOTE:_**  Se puede accerder a la interfaz de usuariode Quarkus en la ruta: http://localhost:8080/q/dev/.
 
-## Packaging and running the application
-
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/xmen-app-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Related Guides
-
-- RESTEasy Reactive ([guide](https://quarkus.io/guides/resteasy-reactive)): A JAX-RS implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-
-## Provided Code
-
-### RESTEasy Reactive
-
-Easily start your Reactive RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
