@@ -9,6 +9,15 @@ Se utiliza Google App Engine para alojar el API desarrollada y una base de datos
 Diagrama de actividades de la Validacion de la secuancia mutante:
 ![img.png](img.png)
 
+Clases donde se realiza la validacion de la secuencia: 
+
+- `XmenServiceImpl`
+- `ValidationHorizontalSequenceImpl`
+- `ValidationVerticalSequenceImpl`
+- `ValidateObliqueSequencesImpl`
+
+
+
 # API Endpoints
 # Local
 - Endpoint para validar si una secuencia ingresada es mutante:
