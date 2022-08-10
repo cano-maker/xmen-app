@@ -62,7 +62,7 @@ public class DNARecordServiceImpl implements IDNARecordService {
     {
         return Optional.of(countMutantDna)
                 .map(aLong -> divStats(aLong.doubleValue(), countHumanDna.doubleValue()))
-                .orElse((double)0);
+                .orElse(0.0);
     }
 
     private double divStats(double countMutantDna, double countHumanDna) {
