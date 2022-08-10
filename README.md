@@ -1,12 +1,14 @@
 # xmen-app Challenge Mercado Libre
 
-Este proyecto usa Quarkus como framework de desarrollo para Java
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework( https://quarkus.io/)
-esta contruido utilizando diferentes paradigmas de programacion como Programacion funcional,
-reactiva y programacion orientada a objetos.
+Este proyecto usa Quarkus como framework de desarrollo para Java ( https://quarkus.io/)
+esta construido utilizando diferentes paradigmas de programacion como Programacion funcional,
+Programacion reactiva y Programacion orientada a objetos.
 
 Se utiliza Google App Engine para alojar el API desarrollada y una base de datos PostgreSQL.
+
+# Ruta API Google App Engine
+
+https://xmen-validator.uc.r.appspot.com/mutant
 
 > **_NOTE:_**  actualmente la base de datos funciona unicamente de forma local, en un futuro estara en CloudSQL
 
@@ -33,4 +35,5 @@ Correr la aplicación utilizando el comando:
 ```
 
 > **_NOTE:_**  Se puede accerder a la interfaz de usuariode Quarkus en la ruta: http://localhost:8080/q/dev/.
+
 
