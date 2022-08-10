@@ -60,11 +60,14 @@ public class DNARecordServiceImpl implements IDNARecordService {
 
     private Double calculateRation(Long countMutantDna, Long countHumanDna)
     {
-        return Optional.empty()
-                .map(o -> (double)countMutantDna/countHumanDna)
-                .orElse(0.0);
+        return Optional.of(countMutantDna)
+                .map(aLong -> divStats(aLong.doubleValue(), countHumanDna.doubleValue()))
+                .orElse((double)0);
     }
 
+    private double divStats(double countMutantDna, double countHumanDna) {
+        return countMutantDna / countHumanDna;
+    }
 
 
 }

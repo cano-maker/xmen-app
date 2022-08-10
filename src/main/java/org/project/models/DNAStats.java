@@ -1,5 +1,7 @@
 package org.project.models;
 
+import java.util.Objects;
+
 public class DNAStats
 {
     private Long countMutantDna;
@@ -39,4 +41,16 @@ public class DNAStats
         this.ratio = ratio;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DNAStats dnaStats = (DNAStats) o;
+        return Objects.equals(countMutantDna, dnaStats.countMutantDna) && Objects.equals(countHumanDna, dnaStats.countHumanDna) && Objects.equals(ratio, dnaStats.ratio);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(countMutantDna, countHumanDna, ratio);
+    }
 }
